@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+		<link href="./output.css" rel="stylesheet" />
+	</head>
+
+	<body class="body-container">
+		<div class="top-bar">
+			<a href="carte_france.php">Carte de france</a>
+			<input class="btn-connexion" type="button" value="Connexion" />
+		</div>
+		<span>
+			<div class="runway-container"></div>
+		</span>
+		<!-- formulaire d'ajout de voiture -->
+
+		<script>
+			var formulaire = false;
+			$(document).ready(function () {
+				$(".addContainer-intern").click(function () {
+					if (formulaire == false) {
+						formulaire = true;
+						var clickOpenFormBtnValue = $(this).val();
+						var ajaxurl = "src/ajax.php";
+						data = { action: clickOpenFormBtnValue };
+						$.post(ajaxurl, data, function (response) {
+							$(".runway-container").append(response);
+							// * affichage de la valeur de la range
+							const input = document.querySelector("#places-voiture");
+							var value = 2;
+							value = document.querySelector("#nbr-place-value");
+							value.textContent = input.value;
+							input.addEventListener("input", (event) => {
+								value.textContent = event.target.value;
+							});
+							// fonction du bouton d'ajout
+							$(document).ready(function () {
+								$(".bouton-ajouter").click(function () {
+									var clickAddBtnValue = $(this).val();
+									var ajaxurl = "src/ajax.php";
+									// stockage des données du formulaire
+									data = {
+										action: clickAddBtnValue,
+										nom: document.getElementById("nom-voiture").value,
+										type: document.querySelector("#type-voiture").value,
+										train_roulant: document.getElementById(
+											"train-roulant-voiture"
+										).value,
+										places: document.getElementById("places-voiture").value,
+										decapotable: document.getElementById("decapotable-voiture")
+											.value,
+										description: document.getElementById("description-voiture")
+											.value,
+									};
+									console.log(data);
+									$.post(ajaxurl, data, function (response) {
+										// suppression du formulaire dans le document
+										var elementToRemove = document.getElementById("formulaire");
+										if (elementToRemove) {
+											elementToRemove.parentNode.removeChild(elementToRemove);
+										}
+										// res var bool formulaire
+										formulaire = false;
+										$(".runway-container").append(response);
+									});
+								});
+							});
+						});
+					}
+				});
+			});
+		</script>
+
+		<input
+			type="submit"
+			name="addButton"
+			class="addContainer-intern"
+			value="+"
+		/>
+	</body>
+</html>
